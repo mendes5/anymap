@@ -1,3 +1,17 @@
+#### Functions added by the fork:
+I found myself in a situation where I need to test if a given `AnyMap` contains a set of types.
+As we cannot work with types as concrete values, `raw_*` methods were added that work with the underling `TypeId`s of the map.
+
+```rs
+AnyMap.raw_contains(&self, type_id: TypeId) // bool
+AnyMap.raw_contains_all(&self, type_ids: &[TypeId]) // bool
+AnyMap.raw_keys(&self); // Keys<'_, TypeId, Box<A>>
+AnyMap.raw_get::<T>(&self, type_id: TypeId) // Option<&T>
+AnyMap.raw_get_mut::<T>(&mut self, type_id: TypeId) // Option<&mut T>
+```
+
+Original README.md:
+
 ``AnyMap``, a safe and convenient store for one value of each type
 ==================================================================
 

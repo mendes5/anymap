@@ -224,7 +224,7 @@ impl<A: ?Sized + UncheckedAnyExt> Map<A> {
 
     /// Returns all type keys in the map
     #[inline]
-    pub fn keys(&mut self) -> Keys<'_, TypeId, Box<A>> {
+    pub fn raw_keys(&self) -> Keys<'_, TypeId, Box<A>> {
         self.raw.keys()
     }
 
