@@ -4,7 +4,7 @@
 
 use std::any::TypeId;
 use std::borrow::Borrow;
-use std::collections::hash_map::{self, HashMap};
+use std::collections::hash_map::{self, HashMap, Keys};
 use std::hash::Hash;
 use std::hash::{Hasher, BuildHasherDefault};
 #[cfg(test)]
@@ -224,6 +224,12 @@ impl<A: ?Sized + UncheckedAnyExt> RawMap<A> {
     pub fn remove<Q: ?Sized>(&mut self, k: &Q) -> Option<Box<A>>
     where TypeId: Borrow<Q>, Q: Hash + Eq {
         self.inner.remove(k)
+    }
+
+    /// Returns all keys for the map
+    #[inline]
+    pub fn keys(&mut self) -> Keys<'_, TypeId, Box<A>> {
+        self.inner.keys()
     }
 
 }

@@ -4,7 +4,7 @@
 
 use std::any::TypeId;
 use std::marker::PhantomData;
-
+use std::collections::hash_map::Keys;
 use raw::RawMap;
 use any::{UncheckedAnyExt, IntoBox, Any};
 
@@ -201,6 +201,47 @@ impl<A: ?Sized + UncheckedAnyExt> Map<A> {
                 type_: PhantomData,
             }),
         }
+    }
+
+    /// Returns true if the collection contains a entry
+    /// for the given `TypeId`.
+    #[inline]
+    pub fn raw_contains(&self, type_id: TypeId) -> bool {
+        self.raw.contains_key(&type_id)
+    }
+
+    /// Returns true if the collection contains entries
+    /// with all types in the `type_ids` slice.
+    #[inline]
+    pub fn raw_contains_all(&self, type_ids: &[TypeId]) -> bool {
+        for id in type_ids {
+            if !self.raw.contains_key(&id) {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Returns all type keys in the map
+    #[inline]
+    pub fn keys(&mut self) -> Keys<'_, TypeId, Box<A>> {
+        self.raw.keys()
+    }
+
+    /// Returns a reference to the value stored in the collection for the type id, if it exists.
+    #[inline]
+    pub fn raw_get<T: IntoBox<A>>(&self, type_id: TypeId) -> Option<&T> {
+        self.raw
+            .get(&type_id)
+            .map(|any| unsafe { any.downcast_ref_unchecked::<T>() })
+    }
+
+    /// Returns a mutable reference to the value stored in the collection for the type id,
+    #[inline]
+    pub fn raw_get_mut<T: IntoBox<A>>(&mut self, type_id: TypeId) -> Option<&mut T> {
+        self.raw
+            .get_mut(&type_id)
+            .map(|any| unsafe { any.downcast_mut_unchecked::<T>() })
     }
 }
 
